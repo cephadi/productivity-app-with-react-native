@@ -1,6 +1,7 @@
 import React from 'react'
-import { Text, View } from 'react-native'
 import HeaderNav from '../components/home/HeaderNav'
+import MyTask from '../components/home/MyTask'
+import Routines from '../components/home/Routines'
 import SearchInput from '../components/home/SearchInput'
 import ScreenContainer from '../components/ui/ScreenContainer'
 
@@ -9,9 +10,8 @@ const HomeScreen = () => {
         <ScreenContainer>
             <HeaderNav />
             <SearchInput />
-            <View>
-                <Text>HomeScreen</Text>
-            </View>
+            <Routines />
+            <MyTask />
         </ScreenContainer>
     )
 }

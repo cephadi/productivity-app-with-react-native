@@ -15,10 +15,11 @@ const ScreenContainer = ({ children }) => {
 const styles = StyleSheet.create({
     rootContainer: {
         flex: 1,
-        backgroundColor: colors.white
+        backgroundColor: colors.background
     },
     contentContainer: {
         flex: 1,
+        paddingHorizontal: 6
     }
 })
 

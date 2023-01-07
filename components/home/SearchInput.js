@@ -5,7 +5,7 @@ import colors from '../../utils/colors'
 
 const IconSearch = () => (
     <View style={styles.iconContainer}>
-        <Feather name="search" size={28} color={colors.darkGray} />
+        <Feather name="search" size={24} color={colors.darkGray} />
     </View>
 )
 
@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         margin: 8,
-        padding: 8,
-        backgroundColor: colors.textGray,
-        borderRadius: 6
+        backgroundColor: colors.white,
+        borderRadius: 6,
+        elevation: 2
     },
     iconContainer: {
-        marginHorizontal: 6
+        marginLeft: 12
     },
     inputStyle: {
         padding: 8,
