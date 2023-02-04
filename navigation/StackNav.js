@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import FormTaskScreen from '../screens/FormTaskScreen';
+import NotificationInfoScreen from '../screens/NotificationInfoScreen';
 import BottomNav from './BottomNav';
 
 const Stack = createNativeStackNavigator();
@@ -10,6 +12,8 @@ export default function StackNav() {
                 headerShown: false
             }}>
             <Stack.Screen name="BottomNav" component={BottomNav} />
+            <Stack.Screen name="Notification" component={NotificationInfoScreen} />
+            <Stack.Screen name="FormTask" component={FormTaskScreen} />
         </Stack.Navigator>
     );
 }

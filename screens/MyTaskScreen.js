@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { FlatList, Text, View } from 'react-native'
 import GroupTask from '../components/mytask/GroupTask'
@@ -53,6 +54,7 @@ const todos = [
 ]
 
 const MyTaskScreen = () => {
+    const navigation = useNavigation()
     const [selectedMenu, setSelectedMenu] = useState('Today')
     const [listTodo, setListTodo] = useState(todos)
 
@@ -69,7 +71,7 @@ const MyTaskScreen = () => {
         <ScreenContainer>
             <HeaderTitle 
                 rightIcon={"plus"}
-                rightOnPress={() => console.log('add')}
+                rightOnPress={() => navigation.navigate('FormTask')}
                 showRightBtn={true}
                 title="My Task" />
             <TabMenu 

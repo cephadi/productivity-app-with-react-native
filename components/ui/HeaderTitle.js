@@ -2,6 +2,7 @@ import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import colors from '../../utils/colors'
+import { useNavigation } from '@react-navigation/native'
 
 const HeaderBtn = ({ icon, onPress }) => {
     return (
@@ -16,17 +17,21 @@ const HeaderBtn = ({ icon, onPress }) => {
     )
 }
 
-const HeaderTitle = ({ onGoBack, showLeftBtn, showRightBtn, title, rightIcon, rightOnPress }) => {
+const HeaderTitle = ({ showBackBtn, showRightBtn, title, rightIcon, rightOnPress }) => {
+    const navigation = useNavigation()
+
     return (
         <View style={styles.headerContainer}>
             <View style={{ width: '10%' }}>
-                {(showLeftBtn && showLeftBtn === true) && <HeaderBtn icon={"arrow-left"} onPress={onGoBack} />}
+                {(showBackBtn && showBackBtn === true) 
+                    && <HeaderBtn icon={"arrow-left"} onPress={() => navigation.goBack()} />}
             </View>
             <View style={styles.headerTitleContainer}>
                 <Text style={styles.titleText}>{title}</Text>
             </View>
             <View style={{ width: '10%' }}>
-                {(showRightBtn && showRightBtn === true) && <HeaderBtn icon={rightIcon} onPress={rightOnPress} />}
+                {(showRightBtn && showRightBtn === true) 
+                    && <HeaderBtn icon={rightIcon} onPress={rightOnPress} />}
             </View>
         </View>
     )

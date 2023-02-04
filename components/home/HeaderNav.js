@@ -2,6 +2,7 @@ import React from 'react'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import colors from '../../utils/colors'
+import { useNavigation } from '@react-navigation/native'
 
 const Avatar = () => (
     <View style={styles.avatarContainer}>
@@ -21,6 +22,8 @@ const NotificationBtn = ({ onPress }) => (
 )
 
 const HeaderNav = () => {
+    const navigation = useNavigation()
+
     return (
         <View style={styles.headerContainer}>
             <View style={styles.greetingContainer}>
@@ -31,7 +34,7 @@ const HeaderNav = () => {
                 </View>
             </View>
             <View>
-                <NotificationBtn />
+                <NotificationBtn onPress={() => navigation.navigate('Notification')} />
             </View>
         </View>
     )
