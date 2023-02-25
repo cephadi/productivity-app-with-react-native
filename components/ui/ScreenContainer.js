@@ -2,10 +2,10 @@ import React from 'react'
 import { SafeAreaView, StyleSheet, View } from 'react-native'
 import colors from '../../utils/colors'
 
-const ScreenContainer = ({ children }) => {
+const ScreenContainer = ({ children, containerStyle }) => {
     return (
         <SafeAreaView style={styles.rootContainer}>
-            <View style={styles.contentContainer}>
+            <View style={[styles.contentContainer, containerStyle ? containerStyle : null]}>
                 {children}
             </View>
         </SafeAreaView>

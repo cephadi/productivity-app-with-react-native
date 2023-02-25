@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import colors from '../../utils/colors'
 
-const InputText = ({ value, placeholder, onChange }) => {
+const InputText = ({ value, placeholder, onChange, inputStyles }) => {
     return (
         <View style={styles.container}>
             <TextInput
@@ -11,7 +11,7 @@ const InputText = ({ value, placeholder, onChange }) => {
                 value={value}
                 selectionColor={colors.primary}
                 onChangeText={onChange}
-                style={styles.inputText} />
+                style={[styles.inputText, inputStyles ? inputStyles : null]} />
         </View>
     )
 }

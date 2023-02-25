@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import colors from '../../utils/colors'
 import { useNavigation } from '@react-navigation/native'
+import { AuthContext } from '../../context/AuthContextProvider'
 
 const Avatar = () => (
     <View style={styles.avatarContainer}>
@@ -23,6 +24,7 @@ const NotificationBtn = ({ onPress }) => (
 
 const HeaderNav = () => {
     const navigation = useNavigation()
+    const authCtx = useContext(AuthContext)
 
     return (
         <View style={styles.headerContainer}>
@@ -30,7 +32,7 @@ const HeaderNav = () => {
                 <Avatar />
                 <View style={styles.infoContainer}>
                     <Text style={styles.greetingText}>Welcome,</Text>
-                    <Text style={styles.profileText}>Hadi Purnomo</Text>
+                    <Text style={styles.profileText}>{authCtx.sessionUser}</Text>
                 </View>
             </View>
             <View>
