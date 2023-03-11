@@ -1,16 +1,51 @@
+import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 import HeaderTitle from '../components/ui/HeaderTitle'
 import InputText from '../components/ui/InputText'
 import ScreenContainer from '../components/ui/ScreenContainer'
 import SelectText from '../components/ui/SelectText'
+import Tasks from '../data/Tasks'
 import colors from '../utils/colors'
 
 const FormTaskScreen = () => {
+    const navigation = useNavigation()
     const [taskName, setTaskName] = useState('')
-    const [taskGroup, setTaskGroup] = useState('')
+    const [taskGroup, setTaskGroup] = useState(null)
     const [isCompleted, setIsCompleted] = useState(false)
+
+    const resetField = () => {
+        setTaskName('')
+        setTaskGroup(null)
+        setIsCompleted(false)
+    }
+
+    const saveTaskHandler = () => {
+        if (!taskName || !taskGroup) {
+            ToastAndroid.show('All field is required!', ToastAndroid.LONG)
+            return
+        }
+
+        const payload = [
+            { column: 'task_title', value: taskName }, 
+            { column: 'task_group', value: taskGroup?.value },
+            { column: 'task_status', value: isCompleted ? 1 : 0 },
+        ]
+        Tasks.save(payload, (_, resultSet) => {
+            if (resultSet.rowsAffected >= 1) {
+                ToastAndroid.show('Successfully saved task!', ToastAndroid.LONG)
+                resetField()
+                navigation.goBack()
+            }else{
+                ToastAndroid.show('Failed save task!', ToastAndroid.LONG)
+            }
+        },
+        (_, error) => {
+            ToastAndroid.show(error.message, ToastAndroid.LONG)
+            console.log(`FormTaskScreen.saveTaskHandler Error: ${error.message}`)
+        })
+    }
 
     return (
         <ScreenContainer>
@@ -19,7 +54,7 @@ const FormTaskScreen = () => {
                 showBackBtn={true}
                 showRightBtn={true}
                 rightIcon="check"
-                rightOnPress={() => console.log('submit task')} />
+                rightOnPress={saveTaskHandler} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <InputText 

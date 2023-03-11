@@ -1,11 +1,12 @@
-import { useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react'
 import { FlatList, Text, View } from 'react-native'
 import GroupTask from '../components/mytask/GroupTask'
 import HeaderTitle from '../components/ui/HeaderTitle'
 import ScreenContainer from '../components/ui/ScreenContainer'
 import TabMenu from '../components/ui/TabMenu'
 import TodoItem from '../components/ui/TodoItem'
+import Tasks from '../data/Tasks'
 import colors from '../utils/colors'
 
 const tabMenus = [
@@ -53,10 +54,30 @@ const todos = [
     },
 ]
 
+const getIconColor = {
+    todo: {
+        icon: 'file-plus',
+        color: colors.green
+    },
+    in_progress: {
+        icon: 'file-document',
+        color: colors.purple
+    },
+    done: {
+        icon: 'file-check',
+        color: colors.primary
+    },
+    skipped: {
+        icon: 'file-cancel',
+        color: colors.darkGray
+    }
+}
+
 const MyTaskScreen = () => {
     const navigation = useNavigation()
+    const focused = useIsFocused()
     const [selectedMenu, setSelectedMenu] = useState('Today')
-    const [listTodo, setListTodo] = useState(todos)
+    const [listTodo, setListTodo] = useState([])
 
     const checkTodoHandler = (name) => {
         const currentTodos = [...listTodo]
@@ -64,8 +85,28 @@ const MyTaskScreen = () => {
         const newTodo = currentTodos[index]
         newTodo.isCompleted = !newTodo.isCompleted
 
-        setListTodo(currentTodos)
+        // setListTodo(currentTodos)
     }
+
+    const fetchTasks = () => {
+        Tasks.fetchAll((_, { rows: { _array: data } }) => {
+            setListTodo(data.map(obj => ({
+                icon: getIconColor[obj.task_group].icon,
+                iconColor: getIconColor[obj.task_group].color,
+                name: obj.task_title,
+                isCompleted: obj.task_status === 1 ? true : false
+            })))
+        },
+        (_, error) => {
+            console.log(`Fetching Error: ${error.message}`)
+        })
+    }
+
+    useEffect(() => {
+        if (focused) {
+            fetchTasks()
+        }
+    }, [focused])
     
     return (
         <ScreenContainer>
