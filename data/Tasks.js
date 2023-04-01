@@ -6,8 +6,11 @@ class Tasks extends BaseModel {
             { name: 'id', type: 'integer primary key not null' },
             { name: 'task_title', type: 'text' },
             { name: 'task_group', type: 'text' },
-            { name: 'task_status', type: 'integer' }
+            { name: 'task_status', type: 'integer' },
+            { name: 'created_at', type: 'text' },
         ])
+
+        // this.dropTable()
         this.initTable()
         // this.clearTable()
     }
@@ -16,6 +19,15 @@ class Tasks extends BaseModel {
         this.rawQuery(
             `select COUNT(*) as total from ${this.tableName} where task_group = ?`,
             [group],
+            callbackSuccess,
+            callbackFailed
+        )
+    }
+
+    fetchByDate(date, callbackSuccess, callbackFailed) {
+        this.rawQuery(
+            `select * from ${this.tableName} where created_at = ?`,
+            [date],
             callbackSuccess,
             callbackFailed
         )

@@ -29,6 +29,15 @@ class BaseModel {
         })
     }
 
+    dropTable() {
+        this.db.transaction((tx) => {
+            tx.executeSql(`drop table if exists ${this.tableName}`)
+        },
+        (error) => {
+            console.log(`BaseModel.dropTable Error: ${error.message}`)
+        })
+    }
+
     rawQuery(query, params = [], callbackSuccess, callbackFailed) {
         this.db.transaction((tx) => {
             tx.executeSql(
@@ -72,6 +81,22 @@ class BaseModel {
         },
         (error) => {
             console.log(`BaseModel.save Error: ${error.message}`)
+        })
+    }
+    
+    update(id, data, callbackSuccess, callbackFailed) {
+        // data => [{ column: 'title', value: 'testing sql' }, { column: 'desc', value: 'description value' }]
+        const argsColumn = data.map(obj => `${obj.column} = ${obj.value}`).join(', ')
+        this.db.transaction((tx) => {
+            tx.executeSql(
+                `update ${this.tableName} set ${argsColumn} where id = ?`, 
+                [id],
+                callbackSuccess,
+                callbackFailed
+            )
+        },
+        (error) => {
+            console.log(`BaseModel.update Error: ${error.message}`)
         })
     }
 }

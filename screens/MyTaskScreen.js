@@ -1,6 +1,6 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import React, { useEffect, useState } from 'react'
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, Text, ToastAndroid, View } from 'react-native'
 import GroupTask from '../components/mytask/GroupTask'
 import HeaderTitle from '../components/ui/HeaderTitle'
 import ScreenContainer from '../components/ui/ScreenContainer'
@@ -13,45 +13,6 @@ const tabMenus = [
     'Today',
     'Week',
     'Month'
-]
-
-const todos = [
-    {
-        icon: 'account-question',
-        iconColor: colors.green,
-        name: 'Drink Water',
-        isCompleted: true
-    },
-    {
-        icon: 'account-question',
-        iconColor: colors.purple,
-        name: 'Workout',
-        isCompleted: false
-    },
-    {
-        icon: 'account-question',
-        iconColor: colors.darkGray,
-        name: 'Working',
-        isCompleted: false
-    },
-    {
-        icon: 'account-question',
-        iconColor: colors.primary,
-        name: 'Walk the Dog',
-        isCompleted: true
-    },
-    {
-        icon: 'account-question',
-        iconColor: colors.primary,
-        name: 'Walk the Dog 2',
-        isCompleted: true
-    },
-    {
-        icon: 'account-question',
-        iconColor: colors.primary,
-        name: 'Walk the Dog 3',
-        isCompleted: true
-    },
 ]
 
 const getIconColor = {
@@ -79,18 +40,34 @@ const MyTaskScreen = () => {
     const [selectedMenu, setSelectedMenu] = useState('Today')
     const [listTodo, setListTodo] = useState([])
 
-    const checkTodoHandler = (name) => {
-        const currentTodos = [...listTodo]
-        const index = currentTodos.findIndex(todo => todo.name === name)
-        const newTodo = currentTodos[index]
-        newTodo.isCompleted = !newTodo.isCompleted
+    const setCompletedTask = (taskId, isChecked) => {
+        if (isChecked) {
+            ToastAndroid.show('Task already completed!', ToastAndroid.LONG)
+            return
+        }
 
-        // setListTodo(currentTodos)
+        const payload = [
+            { column: 'task_status', value: 1 },
+            { column: 'task_group', value: "'done'" },
+        ]
+        Tasks.update(taskId, payload, (_, resultSet) => {
+            if (resultSet.rowsAffected >= 1) {
+                ToastAndroid.show('Successfully updated task!', ToastAndroid.LONG)
+                fetchTasks()
+            }else{
+                ToastAndroid.show('Failed update task!', ToastAndroid.LONG)
+            }
+        },
+        (_, error) => {
+            ToastAndroid.show(error.message, ToastAndroid.LONG)
+            console.log(`MyTaskScreen.setCompletedTask Error: ${error.message}`)
+        })
     }
 
     const fetchTasks = () => {
         Tasks.fetchAll((_, { rows: { _array: data } }) => {
             setListTodo(data.map(obj => ({
+                id: obj.id,
                 icon: getIconColor[obj.task_group].icon,
                 iconColor: getIconColor[obj.task_group].color,
                 name: obj.task_title,
@@ -125,7 +102,11 @@ const MyTaskScreen = () => {
                     data={listTodo}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(_,i) => i}
-                    renderItem={({ item }) => <TodoItem {...item} onCheck={checkTodoHandler} />} />
+                    renderItem={({ item }) => (
+                        <TodoItem
+                            {...item} 
+                            onCheck={title => setCompletedTask(item.id, item.isCompleted)} />
+                    )} />
             </View>
         </ScreenContainer>
     )

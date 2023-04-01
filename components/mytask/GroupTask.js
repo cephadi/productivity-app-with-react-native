@@ -35,7 +35,7 @@ const data = [
     },
 ]
 
-const GroupTask = () => {
+const GroupTask = ({ header }) => {
     const [listGroups, setListGroups] = useState(data)
 
     const countGroup = (group) => {
@@ -62,6 +62,7 @@ const GroupTask = () => {
 
     return (
         <View style={styles.container}>
+            {header}
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={listGroups}

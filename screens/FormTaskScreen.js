@@ -9,6 +9,12 @@ import SelectText from '../components/ui/SelectText'
 import Tasks from '../data/Tasks'
 import colors from '../utils/colors'
 
+const today = () => {
+    const date = new Date()
+    const month = ['01', '02', '03', '04', '05', '06', '07', '08','09', '10', '11', '12']
+    return `${date.getFullYear()}-${month[date.getMonth()]}-${date.getDate() < 10 ? '0'+date.getDate() : date.getDate()}`
+}
+
 const FormTaskScreen = () => {
     const navigation = useNavigation()
     const [taskName, setTaskName] = useState('')
@@ -31,6 +37,7 @@ const FormTaskScreen = () => {
             { column: 'task_title', value: taskName }, 
             { column: 'task_group', value: taskGroup?.value },
             { column: 'task_status', value: isCompleted ? 1 : 0 },
+            { column: 'created_at', value: today() },
         ]
         Tasks.save(payload, (_, resultSet) => {
             if (resultSet.rowsAffected >= 1) {
