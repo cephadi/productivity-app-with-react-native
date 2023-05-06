@@ -8,6 +8,7 @@ class Tasks extends BaseModel {
             { name: 'task_group', type: 'text' },
             { name: 'task_status', type: 'integer' },
             { name: 'created_at', type: 'text' },
+            { name: 'user_id', type: 'integer' },
         ])
 
         // this.dropTable()

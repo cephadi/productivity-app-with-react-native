@@ -32,7 +32,7 @@ const HeaderNav = () => {
                 <Avatar />
                 <View style={styles.infoContainer}>
                     <Text style={styles.greetingText}>Welcome,</Text>
-                    <Text style={styles.profileText}>{authCtx.sessionUser}</Text>
+                    <Text style={styles.profileText}>{authCtx.sessionUser?.fullname}</Text>
                 </View>
             </View>
             <View>

@@ -1,10 +1,11 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext({
     isLogin: false,
     sessionUser: null,
     setIsLogin: (isLogin) => {},
-    setSessionUser: (name) => {},
+    setSessionUser: (data) => {},
 })
 
 const AuthContextProvider = ({ children }) => {
@@ -15,10 +16,33 @@ const AuthContextProvider = ({ children }) => {
         setIsSignin(isLogin)
     }
 
-    const setUserSessionHandler = (name) => {
-        // TODO: save to sqlite/db/session
-        setUserSession(name)
+    const setUserSessionHandler = async (data) => {
+        try {
+            const jsonValue = JSON.stringify(data)
+            await AsyncStorage.setItem('@userData', jsonValue)
+            setUserSession(data)
+        } catch (e) {
+            // saving error
+            console.log(`Error save to storage: ${e.message}`)
+        }
     }
+
+    const checkSessionUser = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@userData')
+            if (jsonValue != null) {
+                setUserSession(JSON.parse(jsonValue))
+                setIsSignin(true)
+            }
+        } catch(e) {
+            // error reading value
+            console.log(`Error read from storage: ${e.message}`)
+        }
+    }
+
+    useEffect(() => {
+        checkSessionUser()
+    }, [])
 
     const value = {
         isLogin: isSignin,

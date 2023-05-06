@@ -8,44 +8,79 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import Users from '../data/Users'
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
     const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
-    const [userAccount, setUserAccount] = useState('')
-    const [userPassword, setUserPassword] = useState('')
+    const [fullname, setFullname] = useState('')
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
 
-    const loginHandler = () => {
-        if (userAccount.trim() === '') {
-            Alert.alert("Failed", "Please fill your account!")
-            return
+    const validateForm = () => {
+        let isValid = true
+        switch (true) {
+            case (fullname.trim() === ''):
+                Alert.alert("Failed", "Please fill your fullname!")
+                isValid = false
+                break;
+            case (email.trim() === ''):
+                Alert.alert("Failed", "Please fill your email!")
+                isValid = false
+                break;
+            case (!String(email).toLowerCase().match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)):
+                Alert.alert("Failed", "Please input valid email!")
+                isValid = false
+                break;
+            case (username.trim() === ''):
+                Alert.alert("Failed", "Please fill your username!")
+                isValid = false
+                break;
+            case (password.trim() === ''):
+                Alert.alert("Failed", "Please fill your email!")
+                isValid = false
+                break;
+            case (password !== confirmPassword):
+                Alert.alert("Failed", "Please input valid password!")
+                isValid = false
+                break;
         }
-
-        getUser()
+        return isValid
     }
 
-    const getUser = () => {
-        Users.fetchUserByEmailOrUsername(userAccount, (_, { rows: { _array: data } }) => {
-            if (data.length > 0) {
-                if (data[0].password === userPassword) {
-                    ToastAndroid.show('Successfully login!', ToastAndroid.LONG)
-                    authCtx.setSessionUser({
-                        userId: data[0].id,
-                        fullname: data[0].fullname,
-                        email: data[0].email,
-                        username: data[0].username
-                    })
-                    authCtx.setIsLogin(true)
-                }else{
-                    ToastAndroid.show('Failed login! Password is wrong.', ToastAndroid.LONG)
-                    setUserPassword('')
-                }
+    const registerHandler = () => {
+        if (!validateForm()) 
+            return
+
+        saveUser()
+    }
+
+    const saveUser = () => {
+        const payload = [
+            { column: 'fullname', value: fullname }, 
+            { column: 'email', value: email },
+            { column: 'username', value: username },
+            { column: 'password', value: password },
+        ]
+        Users.save(payload, (_, resultSet) => {
+            if (resultSet.rowsAffected >= 1) {
+                ToastAndroid.show('Successfully register user!', ToastAndroid.LONG)
+                authCtx.setSessionUser({
+                    userId: resultSet.insertId,
+                    fullname,
+                    email,
+                    username
+                })
+                authCtx.setIsLogin(true)
             }else{
-                ToastAndroid.show('Account not found! Please input valid account.', ToastAndroid.LONG)
+                ToastAndroid.show('Failed register user!', ToastAndroid.LONG)
+                navigation.navigate('Register')
             }
         },
         (_, error) => {
-            ToastAndroid.show('Error fetching user!', ToastAndroid.LONG)
-            console.log(`Fetching getUser Error: ${error.message}`)
+            ToastAndroid.show(error.message, ToastAndroid.LONG)
+            console.log(`RegisterScreen.saveUser Error: ${error.message}`)
         })
     }
 
@@ -74,16 +109,38 @@ const LoginScreen = () => {
                 </View>
                 <View style={styles.inputContainer}>
                     <InputText 
-                        placeholder={"Your Username or Email"}
-                        value={userAccount}
-                        onChange={setUserAccount}
+                        placeholder={"Your Fullname"}
+                        value={fullname}
+                        onChange={setFullname}
+                        inputStyles={{ flex: 0 }} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <InputText 
+                        placeholder={"Your Email"}
+                        value={email}
+                        onChange={setEmail}
+                        inputStyles={{ flex: 0 }} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <InputText 
+                        placeholder={"Your Username"}
+                        value={username}
+                        onChange={setUsername}
                         inputStyles={{ flex: 0 }} />
                 </View>
                 <View style={styles.inputContainer}>
                     <InputText 
                         placeholder={"Your Password"}
-                        value={userPassword}
-                        onChange={setUserPassword}
+                        value={password}
+                        onChange={setPassword}
+                        isSecure={true}
+                        inputStyles={{ flex: 0 }} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <InputText 
+                        placeholder={"Your Confirm Password"}
+                        value={confirmPassword}
+                        onChange={setConfirmPassword}
                         isSecure={true}
                         inputStyles={{ flex: 0 }} />
                 </View>
@@ -94,9 +151,26 @@ const LoginScreen = () => {
                         justifyContent: 'space-evenly', 
                         marginBottom: 8 }}>
                     <Pressable
-                        onPress={loginHandler}
+                        onPress={registerHandler}
                         style={({ pressed }) => [
                             styles.btnContainer,
+                            pressed ? { opacity: 0.7 } : null
+                        ]}>
+                        <MaterialCommunityIcons name='account-check' color={colors.white} size={24} />
+                        <Text 
+                            style={{ 
+                                marginLeft: 4,
+                                fontSize: 18, 
+                                fontWeight: 'bold', 
+                                color: colors.white }}>
+                            Register
+                        </Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => navigation.navigate('Login')}
+                        style={({ pressed }) => [
+                            styles.btnContainer,
+                            { backgroundColor: colors.textGray },
                             pressed ? { opacity: 0.7 } : null
                         ]}>
                         <MaterialCommunityIcons name='login' color={colors.white} size={24} />
@@ -106,24 +180,7 @@ const LoginScreen = () => {
                                 fontSize: 18, 
                                 fontWeight: 'bold', 
                                 color: colors.white }}>
-                            Login
-                        </Text>
-                    </Pressable>
-                    <Pressable
-                        onPress={() => navigation.navigate('Register')}
-                        style={({ pressed }) => [
-                            styles.btnContainer,
-                            { backgroundColor: colors.textGray },
-                            pressed ? { opacity: 0.7 } : null
-                        ]}>
-                        <MaterialCommunityIcons name='account-plus' color={colors.white} size={24} />
-                        <Text 
-                            style={{ 
-                                marginLeft: 4,
-                                fontSize: 18, 
-                                fontWeight: 'bold', 
-                                color: colors.white }}>
-                            Register
+                            Back to Login
                         </Text>
                     </Pressable>
                 </View>
@@ -138,18 +195,18 @@ const styles = StyleSheet.create({
     imageBgContainaer: {
         marginVertical: 6,
         backgroundColor: colors.primary,
-        height: height / 2,
+        height: height / 3,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 6,
         elevation: 2,
     },
     inputContainer: {
-        marginVertical: 2,
+        marginVertical: 2
     },
     imageContainer: {
         width: width,
-        height: height / 3
+        height: height / 4
     },
     greetingContainer: {
         marginVertical: 8,
@@ -170,4 +227,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LoginScreen
+export default RegisterScreen

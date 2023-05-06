@@ -2,11 +2,12 @@ import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import colors from '../../utils/colors'
 
-const InputText = ({ value, placeholder, onChange, inputStyles }) => {
+const InputText = ({ value, placeholder, onChange, inputStyles, isSecure }) => {
     return (
         <View style={styles.container}>
             <TextInput
                 placeholder={placeholder}
+                secureTextEntry={isSecure ? true : false}
                 placeholderTextColor={colors.darkGray}
                 value={value}
                 selectionColor={colors.primary}
