@@ -4,14 +4,16 @@ import SettingItem from '../components/setting/SettingItem'
 import HeaderTitle from '../components/ui/HeaderTitle'
 import ScreenContainer from '../components/ui/ScreenContainer'
 import { AuthContext } from '../context/AuthContextProvider'
+import { useNavigation } from '@react-navigation/native'
 
 const SettingScreen = () => {
     const authCtx = useContext(AuthContext)
+    const navigation = useNavigation()
     const settingItems = [
         {
             label: 'Account',
             icon: 'account-cog',
-            onPress: () => console.log('account')
+            onPress: () => navigation.navigate('AccountSetting')
         },
         {
             label: 'Security',

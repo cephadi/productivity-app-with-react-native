@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class BaseModel {
     
@@ -7,6 +8,13 @@ class BaseModel {
         // [ { name: 'id', type: 'integer primary key not null' }, { name: 'title', type: 'text' } ]
         this.columns = columns
         this.db = SQLite.openDatabase('productivity.db') // open connection
+
+        const jsonValue = AsyncStorage.getItem('@userData')
+        this.sessionUser = jsonValue
+    }
+
+    getSession() {
+        return this.sessionUser !== null ? JSON.parse(this.sessionUser._z) : null
     }
 
     initTable() {

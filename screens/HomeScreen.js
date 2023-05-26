@@ -7,14 +7,18 @@ import GroupTask from '../components/mytask/GroupTask'
 import ButtonText from '../components/ui/ButtonText'
 import ScreenContainer from '../components/ui/ScreenContainer'
 import TitleSection from '../components/ui/TitleSection'
+import { useIsFocused } from '@react-navigation/native'
 
 const HomeScreen = () => {
+    const focused = useIsFocused()
+
     return (
         <ScreenContainer>
             <HeaderNav />
             <SearchInput />
             <Routines />
             <GroupTask 
+                focused={focused}
                 header={(
                     <View style={styles.sectionContainer}>
                         <TitleSection title={"My Task"} />

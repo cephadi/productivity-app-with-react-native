@@ -1,5 +1,5 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, Text, ToastAndroid, View } from 'react-native'
 import GroupTask from '../components/mytask/GroupTask'
 import HeaderTitle from '../components/ui/HeaderTitle'
@@ -8,6 +8,7 @@ import TabMenu from '../components/ui/TabMenu'
 import TodoItem from '../components/ui/TodoItem'
 import Tasks from '../data/Tasks'
 import colors from '../utils/colors'
+import { AuthContext } from '../context/AuthContextProvider'
 
 const tabMenus = [
     'Today',
@@ -35,6 +36,7 @@ const getIconColor = {
 }
 
 const MyTaskScreen = () => {
+    const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
     const focused = useIsFocused()
     const [selectedMenu, setSelectedMenu] = useState('Today')
@@ -65,7 +67,7 @@ const MyTaskScreen = () => {
     }
 
     const fetchTasks = () => {
-        Tasks.fetchAll((_, { rows: { _array: data } }) => {
+        Tasks.fetchAll(authCtx.sessionUser?.userId, (_, { rows: { _array: data } }) => {
             setListTodo(data.map(obj => ({
                 id: obj.id,
                 icon: getIconColor[obj.task_group].icon,

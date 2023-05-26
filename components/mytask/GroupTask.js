@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import Tasks from '../../data/Tasks'
 import colors from '../../utils/colors'
 import GroupTaskItem from '../ui/GroupTaskItem'
+import { AuthContext } from '../../context/AuthContextProvider'
 
 const data = [
     {
@@ -35,11 +36,12 @@ const data = [
     },
 ]
 
-const GroupTask = ({ header }) => {
+const GroupTask = ({ header, focused }) => {
+    const authCtx = useContext(AuthContext)
     const [listGroups, setListGroups] = useState(data)
 
     const countGroup = (group) => {
-        Tasks.countTasksByGroup(group, (_, { rows: { _array } }) => {
+        Tasks.countTasksByGroup(group, authCtx.sessionUser?.userId, (_, { rows: { _array } }) => {
             if (_array.length > 0) {
                 const total = _array[0].total
                 const indexGroup = listGroups.findIndex(obj => obj.keyGroup === group)
@@ -54,11 +56,13 @@ const GroupTask = ({ header }) => {
     }
 
     useEffect(() => {
-        countGroup('todo')
-        countGroup('in_progress')
-        countGroup('done')
-        countGroup('skipped')
-    }, [])
+        if (focused) {
+            countGroup('todo')
+            countGroup('in_progress')
+            countGroup('done')
+            countGroup('skipped')
+        }
+    }, [focused])
 
     return (
         <View style={styles.container}>

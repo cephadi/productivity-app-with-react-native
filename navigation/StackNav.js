@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContextProvider';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import AccountSettingScreen from '../screens/AccountSettingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function StackNav() {
                         <Stack.Screen name="BottomNav" component={BottomNav} />
                         <Stack.Screen name="Notification" component={NotificationInfoScreen} />
                         <Stack.Screen name="FormTask" component={FormTaskScreen} />
+                        <Stack.Screen name="AccountSetting" component={AccountSettingScreen} />
                     </>
                 :
                     <>

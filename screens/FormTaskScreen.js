@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { ScrollView, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 import HeaderTitle from '../components/ui/HeaderTitle'
@@ -8,6 +8,7 @@ import ScreenContainer from '../components/ui/ScreenContainer'
 import SelectText from '../components/ui/SelectText'
 import Tasks from '../data/Tasks'
 import colors from '../utils/colors'
+import { AuthContext } from '../context/AuthContextProvider'
 
 const today = () => {
     const date = new Date()
@@ -16,6 +17,7 @@ const today = () => {
 }
 
 const FormTaskScreen = () => {
+    const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
     const [taskName, setTaskName] = useState('')
     const [taskGroup, setTaskGroup] = useState(null)
@@ -38,6 +40,7 @@ const FormTaskScreen = () => {
             { column: 'task_group', value: taskGroup?.value },
             { column: 'task_status', value: isCompleted ? 1 : 0 },
             { column: 'created_at', value: today() },
+            { column: 'user_id', value: authCtx.sessionUser?.userId },
         ]
         Tasks.save(payload, (_, resultSet) => {
             if (resultSet.rowsAffected >= 1) {

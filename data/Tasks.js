@@ -16,19 +16,33 @@ class Tasks extends BaseModel {
         // this.clearTable()
     }
 
-    countTasksByGroup(group, callbackSuccess, callbackFailed) {
+    fetchAll(userId, callbackSuccess, callbackFailed) {
+        this.db.transaction((tx) => {
+            tx.executeSql(
+                `select * from ${this.tableName} where user_id = ? order by id DESC`,
+                [userId],
+                callbackSuccess,
+                callbackFailed
+            )
+        },
+        (error) => {
+            console.log(`Tasks.fetchAll Error: ${error.message}`)
+        })
+    }
+
+    countTasksByGroup(group, userId, callbackSuccess, callbackFailed) {
         this.rawQuery(
-            `select COUNT(*) as total from ${this.tableName} where task_group = ?`,
-            [group],
+            `select COUNT(*) as total from ${this.tableName} where task_group = ? and user_id = ?`,
+            [group, userId],
             callbackSuccess,
             callbackFailed
         )
     }
 
-    fetchByDate(date, callbackSuccess, callbackFailed) {
+    fetchByDate(date, userId, callbackSuccess, callbackFailed) {
         this.rawQuery(
-            `select * from ${this.tableName} where created_at = ?`,
-            [date],
+            `select * from ${this.tableName} where created_at = ? and user_id = ?`,
+            [date, userId],
             callbackSuccess,
             callbackFailed
         )

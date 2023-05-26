@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import colors from '../../utils/colors'
 
-const InputText = ({ value, placeholder, onChange, inputStyles, isSecure }) => {
+const InputText = ({ value, placeholder, onChange, inputStyles, isSecure, disabled }) => {
     return (
         <View style={styles.container}>
             <TextInput
@@ -10,6 +10,8 @@ const InputText = ({ value, placeholder, onChange, inputStyles, isSecure }) => {
                 secureTextEntry={isSecure ? true : false}
                 placeholderTextColor={colors.darkGray}
                 value={value}
+                editable={disabled && disabled === true ? false : true}
+                selectTextOnFocus={disabled && disabled === true ? false : true}
                 selectionColor={colors.primary}
                 onChangeText={onChange}
                 style={[styles.inputText, inputStyles ? inputStyles : null]} />

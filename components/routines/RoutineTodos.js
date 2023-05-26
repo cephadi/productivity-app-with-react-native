@@ -1,11 +1,12 @@
 import { useIsFocused } from '@react-navigation/native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import Tasks from '../../data/Tasks'
 import colors from '../../utils/colors'
 import ButtonText from '../ui/ButtonText'
 import TitleSection from '../ui/TitleSection'
 import TodoItem from '../ui/TodoItem'
+import { AuthContext } from '../../context/AuthContextProvider'
 
 const todos = [
     {
@@ -73,6 +74,7 @@ const today = () => {
 
 const RoutineTodos = ({ currentDate }) => {
     const isFocused = useIsFocused()
+    const authCtx = useContext(AuthContext)
     const [listTodo, setListTodo] = useState([])
 
     const setCompletedTask = (taskId, isChecked) => {
@@ -100,7 +102,7 @@ const RoutineTodos = ({ currentDate }) => {
     }
 
     const fetchTasks = () => {
-        Tasks.fetchByDate(currentDate, (_, { rows: { _array: data } }) => {
+        Tasks.fetchByDate(currentDate, authCtx.sessionUser?.userId, (_, { rows: { _array: data } }) => {
             setListTodo(data.map(obj => ({
                 id: obj.id,
                 icon: getIconColor[obj.task_group].icon,
